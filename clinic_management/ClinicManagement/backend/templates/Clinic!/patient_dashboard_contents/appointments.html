@@ -1,0 +1,330 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queueing</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2b2d2e;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            height: 80px;
+            background-color: #9B3A58;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .brand {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .header .brand i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: calc(100vh - 80px);
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 260px;
+            padding-top: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #495057;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+            color: #f8f9fa;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar a.active {
+            background-color: #6f92b7;
+        }
+
+        /* Footer Styles */
+        .footer {
+            height: 60px;
+            background-color: #161015fd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .content-box {
+            margin-left: 270px;
+            margin-top: 100px;
+            background-color: #FADCD9;
+            padding: 20px;
+            box-shadow: 0px 2px 4px rgba(1, 1, 1, 0.6);
+            border-radius: 8px;
+            max-width: 90%;
+            margin-bottom: 80px;
+        }
+
+        table.form-table {
+            width: 100%;
+            border-spacing: 15px;\
+            
+        }
+
+        table.form-table td {
+            vertical-align: middle;
+            font:bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="brand">
+            <i class="bi bi-hospital"></i>Patient Dashboard
+        </div>
+    </div>
+
+    <div class="sidebar">
+    <a href="{% url 'patient_dashboard' %}"><i class="bi bi-house"></i>Dashboard</a>
+    <a href="{% url 'patient_appointments' %}" class="active"><i class="bi bi-calendar"></i>Appointment</a>
+    <a href="{% url 'patient_queue' %}"><i class="bi bi-people"></i>Patient Queue</a>
+    <a href="{% url 'patient_settings' %}"><i class="bi bi-gear"></i>Settings</a>
+    <a href="#" onclick="confirmLogout()"><i class="bi bi-box-arrow-right"></i>Logout</a>
+</div>
+
+
+    <div class="content-box">
+        <h1 class="text-center mb-4" style="color: #9B3A58;">Book an Appointment</h1>
+        <form method="post" class="p-4 bg-white rounded shadow-sm">
+            {% csrf_token %}
+            <table class="form-table">
+                <tr>
+                    <td><label for="consultation_type" style="font-size:18px; font-weight:bold;" class="form-label">Consultation Type</label></td>
+                    <td>
+                        <select class="form-select" 
+                    style="padding: 5px; /* Padding inside the select box */
+                    border-radius: 3px; /* Rounded corners */
+                    border: 0px solid #ccc; /* Light grey border */
+                    background-color: #f9f9f9; /* Light background color */
+                    font-size: 14px; /* Font size */
+                    font-family: Arial, sans-serif; /* Font style */
+                    color: #333; /* Text color */
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                    transition: all 0.3s ease; /* Smooth transition */"
+                    id="consultation_type" name="consultation_type" required>
+                            <option value="General" selected>General</option>
+                            <option value="Follow-up">Follow-up</option>
+                            <option value="Emergency">Emergency</option>
+                            <option value="Specialist">Specialist</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="date" style="font-size:18px; font-weight:bold;" class="form-label">Date</label></td>
+                    <td><input type="date" 
+                        style="padding: 5px; /* Padding inside the select box */
+                        border-radius: 3px; /* Rounded corners */
+                        border: 0px solid #ccc; /* Light grey border */
+                        background-color: #f9f9f9; /* Light background color */
+                        font-size: 14px; /* Font size */
+                        font-family: Arial, sans-serif; /* Font style */
+                        color: #333; /* Text color */
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                        transition: all 0.3s ease; /* Smooth transition */"
+                        class="form-control" id="date" name="date" required></td>
+                </tr>
+                <tr>
+                    <td><label for="time" style="font-size:18px; font-weight:bold;" class="form-label">Time</label></td>
+                    <td><input type="time" 
+                        style="padding: 5px; /* Padding inside the select box */
+                        border-radius: 3px; /* Rounded corners */
+                        border: 0px solid #ccc; /* Light grey border */
+                        background-color: #f9f9f9; /* Light background color */
+                        font-size: 14px; /* Font size */
+                        font-family: Arial, sans-serif; /* Font style */
+                        color: #333; /* Text color */
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                        transition: all 0.3s ease; /* Smooth transition */"
+                        class="form-control" id="time" name="time" required></td>
+                </tr>
+                <tr>
+                    <td><label for="status" style="font-size:18px; font-weight:bold;" class="form-label">Status</label></td>
+                    <td>
+                        <select class="form-select" 
+                        style="padding: 5px; /* Padding inside the select box */
+                        border-radius: 3px; /* Rounded corners */
+                        border: 0px solid #ccc; /* Light grey border */
+                        background-color: #f9f9f9; /* Light background color */
+                        font-size: 14px; /* Font size */
+                        font-family: Arial, sans-serif; /* Font style */
+                        color: #333; /* Text color */
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                        transition: all 0.3s ease; /* Smooth transition */"
+                        id="status" name="status" disabled>
+                            <option value="Pending" selected>Pending</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <input type="hidden" name="status" value="Pending">
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="queue_id" style="font-size:18px; font-weight:bold;" class="form-label">Queue ID</label></td>
+                    <td><input type="number" 
+                        style="padding: 5px; /* Padding inside the select box */
+                        border-radius: 3px; /* Rounded corners */
+                        border: 0px solid #ccc; /* Light grey border */
+                        background-color: #f9f9f9; /* Light background color */
+                        font-size: 14px; /* Font size */
+                        font-family: Arial, sans-serif; /* Font style */
+                        color: #333; /* Text color */
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                        transition: all 0.3s ease; /* Smooth transition */"
+                        class="form-control" id="queue_id" name="queue_id" required></td>
+                </tr>
+                <tr>
+                    <td><label for="role" style="font-size:18px; font-weight:bold;" class="form-label">Role</label></td>
+                    <td>
+                        <select class="form-select" 
+                        style="padding: 5px; /* Padding inside the select box */
+                        border-radius: 3px; /* Rounded corners */
+                        border: 0px solid #ccc; /* Light grey border */
+                        background-color: #f9f9f9; /* Light background color */
+                        font-size: 14px; /* Font size */
+                        font-family: Arial, sans-serif; /* Font style */
+                        color: #333; /* Text color */
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+                        transition: all 0.3s ease; /* Smooth transition */"
+                        id="role" name="role" required>
+                            <option value="Senior Citizen">Senior Citizen</option>
+                            <option value="Faculty">Faculty</option>
+                            <option value="Personnel">Personnel</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div class="text-center" style="display: flex;
+        justify-content: center; /* Horizontally center the button */
+        align-items: center; /* Vertically center the button */
+        margin-top: 20px;">
+                <button type="submit" class="btn btn-primary px-5 py-2" 
+                style="background-color: #D0847C; /* Custom background color */
+                border-color: #9B3A58; /* Custom border color */
+                color: #F9F1F0; /* Text color */
+                padding: 12px 30px; /* Adjust padding for a better button size */
+                font-size: 16px; /* Font size */
+                border-radius: 16px; /* Rounded corners */
+                border:none;
+                transition: all 0.3s ease; /* Smooth transition for hover effect */"
+                >Book Appointment</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Clinic Management System</p>
+    </div>
+
+    <!-- Confirmation Box Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to log out?</p>
+            <button onclick="logout()">Yes</button>
+            <button onclick="closeModal()">No</button>
+        </div>
+    </div>
+
+    <!-- JavaScript for confirmation box -->
+    <script>
+        function confirmLogout() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            window.location.href = "{% url 'home' %}";
+        }
+    </script>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #F9F1F0;
+            margin: 15% auto;
+            font-size: 120%;
+            font:bolder;
+            padding: 20px;
+            border: 3px solid #9B3A58;
+            border-radius: 10px;
+            width: 30%;
+            text-align: center;
+        }
+        .modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
+            border-color: #9B3A58;
+            background-color: #D0847C;
+        }
+    </style>
+</body>
+</html>

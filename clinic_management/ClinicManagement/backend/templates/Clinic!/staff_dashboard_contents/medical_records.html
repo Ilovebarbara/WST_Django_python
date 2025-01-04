@@ -1,0 +1,592 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queueing</title>
+    <link rel="stylesheet" href="{% static 'clinic!/css/staff_dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  
+    <style>
+         /* Global Styles */
+         body {
+            font-family: Arial, sans-serif;
+            background-color: #2b2d2e;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            height: 80px;
+            background-color: #9B3A58;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .brand {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .header .brand i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: calc(100vh - 80px); /* Adjust for header height */
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 260px;
+            padding-top: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #495057;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+            color: #f8f9fa;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar a.active {
+            background-color: #6f92b7;
+        }
+
+        /* Footer Styles */
+        .footer {
+            height: 60px;
+            background-color: #161015fd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Content Box Styles */
+        .content-box {
+            margin-left: 270px; /* Offset from sidebar */
+            margin-top: 100px; /* Adjust for header height */
+            background-color: #F9F1F0;
+            padding: 20px;
+            box-shadow: 0px 2px 4px rgba(1, 1, 1, 0.6);
+            border-radius: 8px;
+            max-width: 90%;
+            margin-bottom: 80px; /* Ensure it doesn't overlap with footer */
+        }
+
+
+        /* Appointment Section Header */
+        .content-box h2 {
+            color: #9B3A58;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Appointment Cards Section */
+        .appointment-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Grid with flexible columns */
+            gap: 20px;
+        }
+
+        /* Appointment Card Styles */
+        .appointment-card {
+            background-color: #F9F1F0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+        }
+
+        /* Hover Effect */
+        .appointment-card:hover {
+            transform: translateY(-5px); /* Slightly lift the card */
+            box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2); /* Enhance shadow effect */
+            cursor: pointer; /* Indicate that the card is clickable */
+        }
+
+        /* Appointment Card Link */
+        .appointment-card a {
+            color: inherit; /* Ensure link color is inherited */
+            text-decoration: none; /* Remove underline */
+            display: block; /* Make the entire card clickable */
+        }
+
+        /* Active state for the link (optional) */
+        .appointment-card a:active {
+            transform: translateY(0px); /* Return to normal state when clicked */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header .brand {
+                font-size: 20px;
+            }
+
+            .content-box {
+                margin-left: 0;
+                margin-top: 100px;
+            }
+        }
+        /* Top Card Styles */
+.top-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color:  #F8AFA6=;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.features {
+    display: flex;
+    gap: 10px;
+}
+
+.features .btn {
+    padding: 5px 15px;
+    font-size: 14px;
+}
+
+.options {
+    flex-grow: 1;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.options .form-select {
+    width: 100%;
+    padding: 5px;
+}
+
+.queue-number {
+    font-size: 16px;
+    font-weight: bold;
+}
+.custom-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-button.next {
+            background-color: #F8AFA6; /* Green */
+            color: white;
+            border: none;
+        }
+
+        .custom-button.next:hover {
+            background-color: #F8AFA6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-button.reset {
+            background-color: #F8AFA6; /* Red */
+            color: white;
+            border: none;
+        }
+
+        .custom-button.reset:hover {
+            background-color: #F8AFA6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .custom-button:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+        .form-select {
+            border-color: #F8AFA6; /* Border color for the select box */
+            background-color: #F8AFA6; /* Background color for the select box */
+            color: white; /* Text color */
+        }
+
+        .form-select:focus {
+            border-color: #F8AFA6;
+            box-shadow: 0 0 8px rgba(248, 175, 166, 0.8);
+        }
+
+        .btn-primary {
+            background-color: #F8AFA6;
+            border-color: #F8AFA6;
+        }
+
+        .btn-primary:hover {
+            background-color: #e89a91; /* Slightly darker shade on hover */
+            border-color: #e89a91;
+        }
+
+        .btn-primary:focus {
+            background-color: #d7857d;
+            border-color: #d7857d;
+            box-shadow: 0 0 8px rgba(248, 175, 166, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="brand">
+            <i class="bi bi-hospital"></i>Staff Dashboard
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="{% url 'staff_dashboard' %}"><i class="bi bi-house"></i>Dashboard</a>
+        <a href="{% url 'staff_appointments' %}"><i class="bi bi-calendar"></i>Appointments</a>
+        <a href="{% url 'staff_medical_records' %}"class="active"><i class="bi bi-folder"></i>Medical Records</a>
+        <a href="{% url 'add_patient' %}"><i class="bi bi-folder"></i>Add Patient</a>
+        <a href="{% url 'staff_settings' %}"><i class="bi bi-gear"></i>Settings</a>
+        <a href="#" onclick="confirmLogout()"><i class="bi bi-box-arrow-right"></i>Logout</a>
+    </div>
+
+
+      <!-- Top Card -->
+      
+      <div class="content-box">
+        <h2>Patient Records </h2>
+
+
+    
+        <div class="top-card">
+            
+            <h3 Style="color:#9B3A58">Patient Records &#38; History</h3>
+            <div class="filter-form">
+                <input type="text" placeholder="Search by Name or ID" id="search">
+                <select id="filter" class="form-select">
+                    <option value="all">All Records</option>
+                    <option value="archived">Archived</option>
+                </select>
+            </div>
+            <button class="custom-button next" onclick="archiveRecords()">Archive Selected Records</button>
+        </div>
+    
+        
+       <!-- Main Content -->
+<div class="appointment-cards">
+
+    {% for record in medical_records %}
+        <div class="col-12 col-md-4 col-lg-3 mb-4">
+            <div class="appointment-card">
+                <img class="card-img-top" src="https://www.w3schools.com/bootstrap4/img_avatar1.png" alt="Card image" style="width: 100%; height: 50%; position: center;">
+                <h4>Medical Record for {{ record.patient }}</h4>
+                <p>Date: {{ record.date }}</p>
+                <p>Time: {{ record.time }}</p>
+                <p>Height: {{ record.height }} cm</p>
+                <p>Weight: {{ record.weight }} kg</p>
+                <p>Heart Rate: {{ record.hr }} bpm</p>
+                <p>Respiratory Rate: {{ record.rr }} breaths/min</p>
+                <p>Temperature: {{ record.temperature }} °C</p>
+                <p>Blood Pressure: {{ record.bp }}</p>
+                <p>Pain Scale: {{ record.pain_scale }}</p>
+                <p>Other Symptoms: {{ record.other_symptoms }}</p>
+                <p>Initial Diagnosis: {{ record.initial_diagnosis }}</p>
+                <p>Archived: {{ record.is_archived|yesno:"Yes,No" }}</p>
+
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+    
+
+<!-- Sliding Modal for Patient Details -->
+<div class="patient-details-modal" id="patientDetailsModal" tabindex="-1" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-end">
+        <div class="modal-content" style="background-color: #F9F1F0 ; border-radius: 10px; width: 300px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="patientDetailsModalLabel">Patient Details</h2>
+              
+            </div>
+            <div class="modal-body">
+                <!-- Table for Patient Details -->
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td><strong>User:</strong></td>
+                            <td><span id="patientUsername"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Patient number:</strong></td>
+                            <td><span id="patientNumber"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>First name:</strong></td>
+                            <td><span id="patientFirstName"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Last name:</strong></td>
+                            <td><span id="patientLastName"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Address:</strong></td>
+                            <td><span id="patientAddress"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Age:</strong></td>
+                            <td><span id="patientAge"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sex:</strong></td>
+                            <td><span id="patientSex"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Campus:</strong></td>
+                            <td><span id="patientCampus"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>College or office:</strong></td>
+                            <td><span id="patientCollege"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Course or designation:</strong></td>
+                            <td><span id="patientCourse"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Emergency contact name:</strong></td>
+                            <td><span id="emergencyContactName"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Emergency contact relation:</strong></td>
+                            <td><span id="emergencyContactRelation"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Emergency contact number:</strong></td>
+                            <td><span id="emergencyContactNumber"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Blood Type:</strong></td>
+                            <td><span id="patientBloodType"></span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Allergies:</strong></td>
+                            <td><span id="patientAllergies"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Confirmation Box Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to log out?</p>
+            <button onclick="logout()">Yes</button>
+            <button onclick="closeModal()">No</button>
+        </div>
+    </div>
+
+    <!-- JavaScript for confirmation box -->
+    <script>
+        function confirmLogout() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            window.location.href = "{% url 'home' %}";
+        }
+    </script>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #F9F1F0;
+            margin: 15% auto;
+            font-size: 120%;
+            font:bolder;
+            padding: 20px;
+            border: 3px solid #9B3A58;
+            border-radius: 10px;
+            width: 30%;
+            text-align: center;
+        }
+        .modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
+            border-color: #9B3A58;
+            background-color: #D0847C;
+        }
+    </style>
+
+<!-- Add necessary JavaScript to populate modal content -->
+<script>
+function populatePatientDetails(username, patientNumber, firstName, lastName, address, age, sex, campus, college, course, emergencyContactName, emergencyContactRelation, emergencyContactNumber, bloodType, allergies) {
+    document.getElementById('patientUsername').innerText = username;
+    document.getElementById('patientNumber').innerText = patientNumber;
+    document.getElementById('patientFirstName').innerText = firstName;
+    document.getElementById('patientLastName').innerText = lastName;
+    document.getElementById('patientAddress').innerText = address;
+    document.getElementById('patientAge').innerText = age;
+    document.getElementById('patientSex').innerText = sex;
+    document.getElementById('patientCampus').innerText = campus;
+    document.getElementById('patientCollege').innerText = college;
+    document.getElementById('patientCourse').innerText = course;
+    document.getElementById('emergencyContactName').innerText = emergencyContactName;
+    document.getElementById('emergencyContactRelation').innerText = emergencyContactRelation;
+    document.getElementById('emergencyContactNumber').innerText = emergencyContactNumber;
+    document.getElementById('patientBloodType').innerText = bloodType;
+    document.getElementById('patientAllergies').innerText = allergies;
+}
+</script>
+
+<!-- Add Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Add Custom CSS for the Sliding Modal -->
+<style>
+.patient-details-modal {
+    position: fixed;
+    top: 0;
+
+    right: -350px; /* Initially hidden */
+    width: 350px;
+    height: 100%;
+    transition: right 0.5s ease-in-out;
+    z-index: 1050;
+}
+
+.patient-details-modal .modal-dialog {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.patient-details-modal.show {
+    right: 0; 
+}
+/* Custom CSS to make the text in the modal bigger */
+.patient-details-modal .modal-body {
+    font-size: 1.2rem; /* Increase the font size */
+}
+
+.patient-details-modal .modal-body p {
+    margin-bottom: 15px; /* Space out the paragraphs a bit */
+}
+
+.patient-details-modal .modal-body strong {
+    font-size: 1.3rem; /* Make the labels bigger */
+}
+
+.patient-details-modal .modal-body span {
+    font-size: 1.2rem; /* Make the text a bit bigger */
+}
+/* Styling for the table inside the modal */
+.patient-details-modal .modal-body table {
+    width: 100%; /* Make the table take up the full width */
+    border-collapse: collapse; /* Remove space between borders */
+}
+
+.patient-details-modal .modal-body td {
+    padding: 8px; /* Add padding inside the cells */
+    vertical-align: middle; /* Align the content to the center vertically */
+}
+
+.patient-details-modal .modal-body th, 
+.patient-details-modal .modal-body td {
+    border: 1px solid #ddd; /* Add a light border for the table */
+}
+
+.patient-details-modal .modal-body th {
+    background-color: #F9F1F0; /* Light gray background for the headers */
+    text-align: left; /* Align the header text to the left */
+}
+
+.patient-details-modal .modal-body td {
+    background-color: #ffffff; /* White background for the cells */
+}
+
+/* Optional: Make the modal text larger */
+.patient-details-modal .modal-body {
+    font-size: 1.2rem;
+}
+
+.patient-details-modal .modal-body strong {
+    font-size: 1.3rem; /* Larger label text */
+}
+
+.patient-details-modal .modal-body span {
+    font-size: 1.2rem; /* Larger patient info text */
+}
+
+</style>
+
+    
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 Clinic Management System</p>
+    </div>
+</body>
+</html>

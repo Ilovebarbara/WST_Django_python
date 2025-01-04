@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login</title>
+    <link rel="stylesheet" href="{% static 'clinic!/css/staff_login.css' %}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-image: url("{% static 'images/background.jpg' %}");
+            background-size: cover; /* Ensures the image covers the entire screen */
+            background-repeat: no-repeat; /* Prevents repeating */
+            background-attachment: fixed; /* Keeps the background fixed during scroll */
+            background-position: center; /* Centers the image */
+            scroll-behavior: smooth;
+             }
+             .hero-quote img {
+    width: 200px; /* Adjust width for the second image */
+}
+    </style>    
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <img src="{% static 'images/Clinick! Logo.png' %}" alt="Clinic Management Logo" style=" width: 60px; height: auto; margin-bottom: 1px; margin-left: -50px;">
+                <a href="{% url 'home' %}"><img src="{% static 'images/Clinick!.png' %}" alt="Clinic Management Logo"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li>
+                    <a href="{% url 'staff_login' %}" >Staff</a>
+                </li>
+                
+                <li><a href="{% url 'admin_login' %}" >Admin</a></li>
+                <li><a href="#features">About</a></li>
+            </ul>
+        </div>
+    </header>
+    <div class="main-page">
+        <div class="login-container">
+            <h2>Staff Login</h2>
+            <form id="loginForm" method="POST" action="{% url 'staff_login' %}" enctype="application/x-www-form-urlencoded">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="login_entry">Email or Username:</label>
+                    <input type="text" id="login_entry" name="login_entry" required placeholder="Enter your email or username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit">Login</button>
+                {% if messages %}
+                <div class="error-message">
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </form>
+        </div>  
+        <div class="hero-container" style="display: flex; flex-direction: column; /* Stack the images vertically */
+        align-items: center; /* Center content horizontally */
+        justify-content: center; /* Center content vertically if needed */
+        height: 100vh; /* F"> 
+        <div class="hero-logo">
+            <img src="{% static 'images/Clinick! Stethoscope.png' %}" alt="Clinic Management Logo" style="width: 300px; height: auto; margin-bottom: 20px;">
+        </div>
+        <div class="here=quote">
+            <img src="{% static 'images/Clinick! text.png' %}" alt="Clinic Management Logo" style="width: 350px; height: auto; margin-bottom: 20px;">
+        </div>
+        </div>
+    </div>
+    
+     <!-- Footer -->
+     <footer>
+        <p>&copy; 2024 Clinic Management System. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

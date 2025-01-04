@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="{% static 'clinic!/css/staff_dashboard.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2b2d2e;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            height: 80px;
+            background-color: #9B3A58;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .brand {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .header .brand i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: calc(100vh - 80px); /* Adjust for header height */
+            background-color: #343a40;
+            color: white;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 260px;
+            padding-top: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #495057;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+            color: #f8f9fa;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar a.active {
+            background-color: #6f92b7;
+        }
+
+        /* Footer Styles */
+        .footer {
+            height: 60px;
+            background-color: #161015fd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Content Box Styles */
+        .content-box {
+            margin-left: 270px; /* Offset from sidebar */
+            margin-top: 100px; /* Adjust for header height */
+            background-color: #FADCD9;
+            padding: 20px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 90%;
+            margin-bottom: 80px; /* Ensure it doesn't overlap with footer */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header .brand {
+                font-size: 20px;
+            }
+
+            .content-box {
+                margin-left: 0;
+                margin-top: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="brand">
+            <i class="bi bi-hospital"></i>Patient Dashboard
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="{% url 'patient_dashboard' %}" class="active"><i class="bi bi-house"></i>Dashboard</a>
+    <a href="{% url 'patient_appointments' %}"><i class="bi bi-calendar"></i>Appointment</a>
+    <a href="{% url 'patient_queue' %}"><i class="bi bi-people"></i>Patient Queue</a>
+    <a href="{% url 'patient_settings' %}"><i class="bi bi-gear"></i>Settings</a>
+    <a href="#" onclick="confirmLogout()"><i class="bi bi-box-arrow-right"></i>Logout</a>
+    </div>
+    
+
+
+    <!-- Main Content -->
+    <div class="content-box">
+        <h2>Welcome to the Patient Dashboard!</h2>
+        <p>Take charge of your health journey book appointments, track your records, and keep your profile up to date, all in one place</p>
+    </div>
+        <!-- Confirmation Box Modal -->
+     
+    <!-- Confirmation Box Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to log out?</p>
+            <button onclick="logout()">Yes</button>
+            <button onclick="closeModal()">No</button>
+        </div>
+    </div>
+
+    <script>
+        function confirmLogout() {
+            document.getElementById('logoutModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('logoutModal').style.display = 'none';
+        }
+
+        function logout() {
+            window.location.href = "{% url 'home' %}";
+        }
+    </script>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #F9F1F0;
+            margin: 15% auto;
+            font-size: 120%;
+            font:bolder;
+            padding: 20px;
+            border: 3px solid #9B3A58;
+            border-radius: 10px;
+            width: 30%;
+            text-align: center;
+        }
+        .modal-content button {
+            margin: 10px;
+            padding: 10px 20px;
+            border-color: #9B3A58;
+            background-color: #D0847C;
+        }
+    </style>
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 Clinic Management System</p>
+    </div>
+</body>
+</html>

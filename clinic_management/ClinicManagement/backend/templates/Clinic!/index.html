@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic!</title>
+    <link rel="stylesheet" href="{% static 'clinic!/css/styles.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("{% static 'images/background.jpg' %}");
+            background-size: cover; /* Ensures the image covers the entire screen */
+            background-repeat: no-repeat; /* Prevents repeating */
+            background-attachment: fixed; /* Keeps the background fixed during scroll */
+            background-position: center; /* Centers the image */
+
+            /*for the patient button*/
+           
+        }  
+        .patient a {
+    text-decoration: none; /* Removes underline */
+    padding: 10px 20px; /* Adds padding for button-like appearance */
+    background-color: #9B3A58  ;
+    color: #F9F1F8; /* Sets text color to white */
+    border-radius: 5px; /* Rounded corners */
+    display: inline-block; /* Makes the links behave like buttons */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    margin-left: 10px;
+      }
+
+     .patient a:hover {
+     background-color: #d759487c ; /* Darker green on hover */
+      }
+
+      /* Header */
+header {
+    background: #9B3A58; /* #c889c1d0; */
+    padding: 1rem 2rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+      
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="navbar">
+            <div class="logo">
+                <img src="{% static 'images/Clinick! Logo.png' %}" alt="Clinic Management Logo" style=" width: 60px; height: auto; margin-bottom: 1px; margin-left: -50px;">
+                <a href="{% url 'home' %}"><img src="{% static 'images/Clinick!.png' %}" alt="Clinic Management Logo"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li>
+                    <a href="{% url 'staff_login' %}" >Staff</a>
+                </li>
+                
+                <li><a href="{% url 'admin_login' %}" >Admin</a></li>
+                <li><a href="#features">About</a></li>
+            </ul>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-logo">
+            <img src="{% static 'images/Clinick! Stethoscope.png' %}" alt="Clinic Management Logo" style=" width: 250px; height: auto; margin-bottom: 20px;">
+        </div>
+        <h1>Welcome to the University Clinic!</h1>
+        <p>Fast, easy, convenient</p>
+        
+        <div class="patient">
+        <a href="{% url 'patient_login' %}">Patient Login</a>
+        <a href="{% url 'patient_register' %}">New Patient?</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features" style="padding-bottom: 10%;">
+        <h2>Why Choose Us</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Seamless Appointments</h3>
+                <p>Fast, easy, convenient</p>
+            </div>
+            <div class="feature-card">
+                <h3>Secure Medical Records</h3>
+                <p>Access and manage your records with top-notch security.</p>
+            </div>
+            <div class="feature-card">
+                <h3>24/7 Support</h3>
+                <p>We’re here to assist you anytime, anywhere.</p>
+            </div>
+        </div>
+    </section>
+
+    
+
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Clinic Management System. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    </footer>
+
+    <!-- Staff Login Modal 
+    <div class="modal fade" id="staffLoginModal" tabindex="-1" aria-labelledby="staffLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staffLoginModalLabel">Staff Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="staffUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="staffUsername" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="staffPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="staffPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+     Admin Login Modal 
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-labelledby="adminLoginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adminLoginModalLabel">Admin Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="adminUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="adminUsername" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="adminPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
